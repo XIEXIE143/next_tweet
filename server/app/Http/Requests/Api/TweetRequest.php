@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class TweetRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize(): true
     {
         // return false;
         return true;
