@@ -1,9 +1,7 @@
 "use client"
 
-import Image from 'next/image'
-
 export default function Home() {
-  console.log('Home!!!')
+  console.log('Home!!!!')
   return (
     <div>
       <textarea className="resize-none w-full h-24 border rounded-md p-2" placeholder="今なにしてる？"></textarea>
