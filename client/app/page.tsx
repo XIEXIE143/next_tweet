@@ -2,29 +2,29 @@
 
 import { useContext, useEffect, useState } from "react"
 import { getTweets, postTweet } from "./services/TweetService"
-import { User, initialUser, testUser } from "./models/User"
 import { Tweet, initialTweet } from "./models/Tweet"
 import TweetList from "./components/tweet/TweetList"
 import TweetForm from "./components/tweet/TweetForm"
-import { useRouter } from "next/navigation"
-import { getAccessToken, getUser } from "@/app/services/UserService"
 import UserContext from "./context/UserContext"
+import Loading from "./components/Loading"
 
 export default function Home() {
   const { user } = useContext(UserContext);
 
   const [tweets, setTweets] = useState<Tweet[]>([])
   const [newTweet, setNewTweet] = useState<Tweet>(initialTweet);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       console.log("Home:", user)
-      if (user?.accessToken) {
-        //APIからTweetデータ取得
-        const data = await getTweets(user.accessToken);
-        //データ設定
-        setTweets(data);
-      }
+      if (!user?.accessToken) return;
+      //APIからTweetデータ取得
+      const data = await getTweets(user.accessToken);
+      //データ設定
+      setTweets(data);
+      setIsLoading(false);
     })();
   }, [user])
 
@@ -41,7 +41,12 @@ export default function Home() {
     <div>
       <TweetForm onPostTweet={onPostTweet} />
 
-      <TweetList initialTweets={tweets} newTweet={newTweet} />
+      {
+        isLoading ?  
+        <Loading />
+        :
+        <TweetList initialTweets={tweets} newTweet={newTweet} />
+      }
     </div>
   )
 }

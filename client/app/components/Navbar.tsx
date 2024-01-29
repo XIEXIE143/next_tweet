@@ -5,11 +5,17 @@ import { SiLoopback } from 'react-icons/si';
 import NavbarLink from './NavbarLink';
 import { removeAccessToken } from '../services/UserService';
 import { useRouter } from 'next/navigation';
+import { useContext } from 'react';
+import UserContext from '../context/UserContext';
+import { initialUser } from '../models/User';
 
 const Navbar = () => {
     const router = useRouter();
+    const { user, setUser } = useContext(UserContext);
 
     const signOut = async () => {
+        // ユーザ情報削除
+        await setUser(initialUser)
         // Cookie削除
         await removeAccessToken();
         // ログインページにリダイレクト
@@ -26,10 +32,18 @@ const Navbar = () => {
             </div>
 
             <div className="text-sm md:flex-grow">
-                <NavbarLink href="/user/profile" label="Profile" />
-                <NavbarLink href="/auth/regist" label="Register" />
-                <NavbarLink href="#" label="Sign out" onClick={signOut} />
-                <NavbarLink href="/auth/login" label="Sign in" />
+                {
+                    (user == undefined || user?.id > 0) ?
+                        <>
+                            <NavbarLink href="/user/profile" label="Profile" />
+                            <NavbarLink href="#" label="Sign out" onClick={signOut} />
+                        </>
+                        :
+                        <>
+                            <NavbarLink href="/auth/regist" label="Register" />
+                            <NavbarLink href="/auth/login" label="Sign in" />
+                        </>
+                }
             </div>
         </nav>
     )
