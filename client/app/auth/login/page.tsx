@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import FormError from "@/app/components/FormError";
 import UserContext from "@/app/context/UserContext";
 import Loading from "@/app/components/Loading";
+import ClickButton from "@/app/components/ClickButton";
+import LinkButton from "@/app/components/LinkButton";
 
 const LoginPage = () => {
     const { setUser } = useContext(UserContext);
@@ -18,16 +20,6 @@ const LoginPage = () => {
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState({ auth: "" })
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const enableButtonClassName = `w-full bg-blue-500 hover:bg-blue-700
-                                   text-white font-bold 
-                                   py-3 px-4 mb-2
-                                   rounded`;
-    const disableButtonClassName = `w-full bg-blue-200
-                                   text-white font-bold 
-                                   py-3 px-4 mb-2
-                                   rounded`;
 
     const auth = async () => {
         setIsLoading(true);
@@ -56,9 +48,7 @@ const LoginPage = () => {
         setIsLoading(false);
     }
 
-    useEffect(() => {
-        setIsButtonDisabled(!(email && password))
-    }, [email, password])
+    const disabled = () => !(email && password)
 
     return (
         <div className="mx-auto w-1/3">
@@ -86,23 +76,16 @@ const LoginPage = () => {
                     <Loading />
                     :
                     <div>
-                        <button
+                        <ClickButton
+                            label="Sign in"
                             onClick={auth}
-                            className={isButtonDisabled ? disableButtonClassName : enableButtonClassName}
-                            disabled={isButtonDisabled}>
-                            Sign in
-                        </button>
-                        <Link
+                            disabled={disabled()}
+                        />
+
+                        <LinkButton
                             href="/auth/regist"
-                            className="
-                            flex justify-center
-                          bg-gray-200 hover:bg-gray-300
-                          text-gray-500 font-bold 
-                          py-3 px-4 
-                          rounded
-                         ">
-                            Register
-                        </Link>
+                            label="Register"
+                        />
                     </div>
             }
         </div>
